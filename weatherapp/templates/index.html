@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 {% load static %}
-
+{% load parse_iso %}
 
 {% block content %}
 
@@ -14,102 +14,65 @@
 
 				</div>
 			</div>
+
+				
 			<div class="forecast-table">
 				<div class="container">
+						
 					<div class="forecast-container">
+							{% if city %}
+						{% for detail in weather_details %}
+							{% if forloop.counter0 == 0 %}
+								
 						<div class="today forecast">
 							<div class="forecast-header">
 								<div class="day">Today</div>
-								<div class="date">6 Oct</div>
+								<div class="date">{{detail.dt_txt|parse_iso|date:"M d"}}</div>
 							</div> <!-- .forecast-header -->
 							<div class="forecast-content">
-								<div class="location">{{city}}</div>
+								<div class="location">{{city}}, {{code}}</div>
 								<div class="degree">
-									<div class="num">{{deg}}<sup>o</sup>C</div>
+									<div class="num">{{detail.main.temp|add:"-273"}}<sup>o</sup>C</div>
 									<div class="forecast-icon">
-										<img src="{% static 'images/icons/icon-1.svg' %}" alt="" width=90>
+										<img src="{% static image|first %}" alt="" width=90>
 									</div>	
 								</div>
-								<span><img src="{% static 'images/icon-umberella.png' %}" alt="">{{humidity}}%</span>
-								<span><img src="{% static 'images/icon-wind.png' %}" alt="">{{wind_speed}}km/h</span>
+								
+								<span><img src="{% static 'images/icon-umberella.png' %}" alt="">{{detail.main.humidity}}%</span>
+								<span><img src="{% static 'images/icon-wind.png' %}" alt="">{{detail.wind.speed}}km/h</span>
 								<span><img src="{% static 'images/icon-compass.png' %}" alt="">{{lat}}<sup>o</sup>E &nbsp; {{long}}<sup>o</sup> N</span>
 							</div>
 						</div>
+							{% else %}
 						<div class="forecast">
 							<div class="forecast-header">
-								<div class="day">Tuesday</div>
+								<div class="day">{{detail.dt_txt|parse_iso|date:"l"}}</div>
 							</div> <!-- .forecast-header -->
 							<div class="forecast-content">
 								<div class="forecast-icon">
-									<img src="{% static 'images/icons/icon-3.svg' %}" alt="" width=48>
+										
+									<img src="{% static image|get_item:forloop.counter0%}" alt="" width=48>
+									
 								</div>
-								<div class="degree">23<sup>o</sup>C</div>
-								<small>18<sup>o</sup></small>
+								
+								
+
+								
+								<div class="degree">{{detail.main.temp_max|add:"-273"}}<sup>o</sup>C</div>
+								<small>{{detail.main.temp_min|add:"-273"}} <sup>o</sup>C</small>
 							</div>
 						</div>
-						<div class="forecast">
-							<div class="forecast-header">
-								<div class="day">Wednesday</div>
-							</div> <!-- .forecast-header -->
-							<div class="forecast-content">
-								<div class="forecast-icon">
-									<img src="images/icons/icon-5.svg" alt="" width=48>
-								</div>
-								<div class="degree">23<sup>o</sup>C</div>
-								<small>18<sup>o</sup></small>
-							</div>
-						</div>
-						<div class="forecast">
-							<div class="forecast-header">
-								<div class="day">Thursday</div>
-							</div> <!-- .forecast-header -->
-							<div class="forecast-content">
-								<div class="forecast-icon">
-									<img src="images/icons/icon-7.svg" alt="" width=48>
-								</div>
-								<div class="degree">23<sup>o</sup>C</div>
-								<small>18<sup>o</sup></small>
-							</div>
-						</div>
-						<div class="forecast">
-							<div class="forecast-header">
-								<div class="day">Friday</div>
-							</div> <!-- .forecast-header -->
-							<div class="forecast-content">
-								<div class="forecast-icon">
-									<img src="images/icons/icon-12.svg" alt="" width=48>
-								</div>
-								<div class="degree">23<sup>o</sup>C</div>
-								<small>18<sup>o</sup></small>
-							</div>
-						</div>
-						<div class="forecast">
-							<div class="forecast-header">
-								<div class="day">Saturday</div>
-							</div> <!-- .forecast-header -->
-							<div class="forecast-content">
-								<div class="forecast-icon">
-									<img src="images/icons/icon-13.svg" alt="" width=48>
-								</div>
-								<div class="degree">23<sup>o</sup>C</div>
-								<small>18<sup>o</sup></small>
-							</div>
-						</div>
-						<div class="forecast">
-							<div class="forecast-header">
-								<div class="day">Sunday</div>
-							</div> <!-- .forecast-header -->
-							<div class="forecast-content">
-								<div class="forecast-icon">
-									<img src="images/icons/icon-14.svg" alt="" width=48>
-								</div>
-								<div class="degree">23<sup>o</sup>C</div>
-								<small>18<sup>o</sup></small>
-							</div>
-						</div>
+						{% endif %}
+						{% endfor %}
+						
+						{% endif %}
 					</div>
+					
 				</div>
 			</div>
+			
+
+
 			<main class="main-content">
 				<div class="fullwidth-block">
 					<div class="container">
@@ -210,15 +173,15 @@
 							<div class="col-md-4">
 								<h2 class="section-title">Awesome Photos</h2>
 								<div class="photo-grid">
-									<a href="#"><img src="images/thumb-1.jpg" alt="#"></a>
-									<a href="#"><img src="images/thumb-2.jpg" alt="#"></a>
-									<a href="#"><img src="images/thumb-3.jpg" alt="#"></a>
-									<a href="#"><img src="images/thumb-4.jpg" alt="#"></a>
-									<a href="#"><img src="images/thumb-5.jpg" alt="#"></a>
-									<a href="#"><img src="images/thumb-6.jpg" alt="#"></a>
-									<a href="#"><img src="images/thumb-7.jpg" alt="#"></a>
-									<a href="#"><img src="images/thumb-8.jpg" alt="#"></a>
-									<a href="#"><img src="images/thumb-9.jpg" alt="#"></a>
+									<a href="#"><img src="{% static 'images/thumb-1.jpg' %}" alt="#"></a>
+									<a href="#"><img src="{% static 'images/thumb-2.jpg' %}" alt="#"></a>
+									<a href="#"><img src="{% static 'images/thumb-3.jpg' %}" alt="#"></a>
+									<a href="#"><img src="{% static 'images/thumb-4.jpg' %}" alt="#"></a>
+									<a href="#"><img src="{% static 'images/thumb-5.jpg' %}" alt="#"></a>
+									<a href="#"><img src="{% static 'images/thumb-6.jpg' %}" alt="#"></a>
+									<a href="#"><img src="{% static 'images/thumb-7.jpg' %}" alt="#"></a>
+									<a href="#"><img src="{% static 'images/thumb-8.jpg' %}" alt="#"></a>
+									<a href="#"><img src="{% static 'images/thumb-9.jpg' %}" alt="#"></a>
 								</div>
 							</div>
 						</div>
