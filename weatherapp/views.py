@@ -10,17 +10,28 @@ from .process_image import get_image
 
 
 def index(request):
+
+    return render(request, "index.html", context)
+
+class IndexView(View):
+    template_name = "index.html"
     context = {}
     weather_data = []
+    data = ''
+    json_data = None
+    images = []
+   
+    def get(self, request, *args, **kwargs):
+        context = request.session.get('context')
+        
+        return render(request, self.template_name, context)
     
-    if request.method == 'POST':
-        
+    def post(self, request, *args, **kwargs):
         location = request.POST['location']
-        request.session['location'] = location
-        
-        data = ''
-        json_data = None
+        weather_data = []
         images = []
+        request.session['location'] = location
+
         try:
             data = requests.get('http://api.openweathermap.org/data/2.5/forecast?q='+ location +'&cnt=40&appid=845fbddc53f11264927270674491d34d').json()
             #pp(data)
@@ -37,14 +48,15 @@ def index(request):
             "long": int(data['city']['coord']['lon']),
             "image": images
             }
+            request.session['context'] = context
             
         except requests.ConnectionError:
-            raise ConnectionError
+            return redirect('index')
         except KeyError:
             return redirect('/')
 
-    return render(request, "index.html", context)
-
+        return redirect(request.path)
+        
 
 class PhotoListView(ListView):
     
@@ -67,4 +79,5 @@ class PhotoListView(ListView):
             return redirect('/')
         except NameError:
             return redirect('/')
+        
         return render(request, 'photos.html', {'data': data})
