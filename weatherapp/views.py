@@ -11,7 +11,10 @@ from .process_image import get_image
 
 def index(request):
 
-    return render(request, "index.html", context)
+    if request.method == 'POST':
+        print(request.POST)
+
+    return render(request, "index2.html")
 
 class IndexView(View):
     template_name = "index.html"
